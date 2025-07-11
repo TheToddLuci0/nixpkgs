@@ -7643,6 +7643,8 @@ self: super: with self; {
 
   keepalive = callPackage ../development/python-modules/keepalive { };
 
+  keepercommander = callPackage ../development/python-modules/keepercommander { };
+
   keeper-secrets-manager-core = callPackage ../development/python-modules/keeper-secrets-manager-core { };
 
   keepkey = callPackage ../development/python-modules/keepkey { };
