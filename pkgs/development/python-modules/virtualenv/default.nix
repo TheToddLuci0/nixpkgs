@@ -16,18 +16,22 @@
   python-discovery,
   time-machine,
   versionCheckHook,
+  hatch-fancy-pypi-readme,
+  python-sbom,
+  uv-build,
+  scikit-build-core,
 }:
 
 buildPythonPackage rec {
   pname = "virtualenv";
-  version = "21.14.12";
+  version = "21.15.14";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "pypa";
     repo = "virtualenv";
     tag = version;
-    hash = "sha256-Lkjhcs1Bj/ObaTyqVL2wGUvwxTkzL0pX8Ii5hSHdrSA=";
+    hash = "sha256-coWSoftk7Ku2YJFBqrdt6Po8g/08+MlBlNYrg63Xw+U=";
   };
 
   postPatch = ''
@@ -38,6 +42,9 @@ buildPythonPackage rec {
   build-system = [
     hatch-vcs
     hatchling
+    python-sbom
+    hatch-fancy-pypi-readme
+    uv-build
   ];
 
   dependencies = [
@@ -53,6 +60,7 @@ buildPythonPackage rec {
     pytest-mock
     pytestCheckHook
     versionCheckHook
+    passthru.scikit-build-core-no-check
   ]
   ++ lib.optionals isPyPy [ pytest-freezer ]
   ++ lib.optionals (!isPyPy) [ time-machine ];
@@ -83,6 +91,15 @@ buildPythonPackage rec {
   ];
 
   pythonImportsCheck = [ "virtualenv" ];
+
+  passthru = {
+    # FIXME this doesn't work weeeeee
+    # scikit-build-core depends on virtualenv
+    # venv -> sbom -> scikit = infinite recursion
+    scikit-build-core-no-check = scikit-build-core.overridePythonAttrs {
+      doCheck=false;
+    };
+  };
 
   meta = {
     description = "Tool to create isolated Python environments";
