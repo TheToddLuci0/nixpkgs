@@ -22,7 +22,7 @@
   scikit-build-core,
 }:
 
-buildPythonPackage rec {
+buildPythonPackage ( finalAttrs: {
   pname = "virtualenv";
   version = "21.15.14";
   pyproject = true;
@@ -30,7 +30,7 @@ buildPythonPackage rec {
   src = fetchFromGitHub {
     owner = "pypa";
     repo = "virtualenv";
-    tag = version;
+    tag = finalAttrs.version;
     hash = "sha256-coWSoftk7Ku2YJFBqrdt6Po8g/08+MlBlNYrg63Xw+U=";
   };
 
@@ -60,7 +60,7 @@ buildPythonPackage rec {
     pytest-mock
     pytestCheckHook
     versionCheckHook
-    passthru.scikit-build-core-no-check
+    finalAttrs.passthru.scikit-build-core-no-check
   ]
   ++ lib.optionals isPyPy [ pytest-freezer ]
   ++ lib.optionals (!isPyPy) [ time-machine ];
@@ -105,8 +105,8 @@ buildPythonPackage rec {
     description = "Tool to create isolated Python environments";
     mainProgram = "virtualenv";
     homepage = "https://virtualenv.pypa.io/en/latest/";
-    changelog = "https://github.com/pypa/virtualenv/blob/${version}/docs/changelog.rst";
+    changelog = "https://github.com/pypa/virtualenv/blob/${finalAttrs.version}/docs/changelog.rst";
     license = lib.licenses.mit;
     maintainers = [ ];
   };
-}
+})
